@@ -34,6 +34,7 @@ module.exports = {
         'react/prop-types': 'off', // Turn off prop-types rule
         'react/react-in-jsx-scope': 'off', // React import no longer required
         'react/jsx-key': 'error', // Enforce keys in lists
+        'linebreak-style': ['error', 'unix'], // unix = LF, windows = CRLF
       },
     },
   ],
