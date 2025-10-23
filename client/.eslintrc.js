@@ -30,11 +30,10 @@ module.exports = {
         'prettier',
       ],
       rules: {
-        'prettier/prettier': 'error', // makes Prettier issues show as errors in VS Code
+        'prettier/prettier': ['error', { endOfLine: 'auto' }],
         'react/prop-types': 'off', // Turn off prop-types rule
         'react/react-in-jsx-scope': 'off', // React import no longer required
         'react/jsx-key': 'error', // Enforce keys in lists
-        'linebreak-style': ['error', 'unix'], // unix = LF, windows = CRLF
       },
     },
   ],
