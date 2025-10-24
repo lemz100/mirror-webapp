@@ -42,5 +42,6 @@ TOMORROW::
         -Going to add separate authentication logic: user will find out whether its the username/email or the password that is incorrect.
         -Going to add password hashing/unhashing
         -Going to add password validation checklist (checks to see if password is valid with 5x rules like online forms)
+        -Going to add tests for ensuring authentication is working properly.
         
                     
