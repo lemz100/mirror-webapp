@@ -26,12 +26,5 @@
     "username": "maya.patel",
     "email": "maya.patel@example.com",
     "password": "99998888"
-  },
-  {
-    "id": 5,
-    "name": "Lemuel Owusu-Poku",
-    "username": "lemz100",
-    "email": "lemuelpoku22@gmail.com",
-    "password": "Lemuel123!"
   }
 ]
