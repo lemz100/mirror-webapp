@@ -7,6 +7,10 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+a:-webkit-any-link {
+  text-decoration: none;
+}
+
 /** Removes default input styling - remove comment to use
 input[type=radio], input[type=checkbox], input[type=range] {
   appearance: none;        
@@ -49,11 +53,12 @@ img {
   max-inline-size: 100%;
 }
 
-html, body {
+html,
+body {
   min-height: 100vh;
 }
 
 body {
+  background-color: antiquewhite;
   min-width: 320px;
 }
-

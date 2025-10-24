@@ -1,6 +1,10 @@
 import logo from './logo.svg';
 import axios from 'axios';
+import HomePage from './pages/HomePage/HomePage';
+import Login from './pages/Authentication/Login';
+import Signup from './pages/Authentication/Signup';
 import './App.less';
+import { Routes, Route } from 'react-router-dom';
 
 //data will be the string we send from our server
 const apiCall = () => {
@@ -13,13 +17,11 @@ const apiCall = () => {
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>Hey</p>
-        <button onClick={apiCall}>Call the API!</button>
-      </header>
-    </div>
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/register" element={<Signup />} />
+      <Route path="/login" element={<Login />} />
+    </Routes>
   );
 }
 

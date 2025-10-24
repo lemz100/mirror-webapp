@@ -1,0 +1,46 @@
+23/10/2025 18:05:
+-Prepared the environment by using my own custom React and Node.JS Template bundled with Webpack, Prettier and ESLint
+- Fixed up LESS Modules issues by setting the option 'esModule' to false in the webpack.config.js file
+    -Expected .module.less to be a ES6 file, however from setting this it now expects .module.less to be a CommonJS File.
+
+24/10/2025 09:50:
+-Setting up routing for the Homepage, Signup Page and Login Page
+    -Added styling reset for <Link> to overwrite them with custom styling
+    -Simple 'Welcome, Signup, Login' Page
+-Setting up Login and Signup page
+    -Set up the Signup component with a form and its states - formData and formErrors.
+    -Setting up a helper file 'validation.js' that will hold all the form validation for the form.
+-Testing error messages and form logic
+    -Using unit tests for testing form logic.
+    -First styling the page to make testing a bit easier.
+    -Using jest to test - my first time.
+        - Testing authentication signup first.
+        - 4X testing cases:
+            -Missing input fields
+            -Invalid email format
+            -Weak password (not enough characters)
+            -Password missing uppercase
+    -Styled the login page and registration page.
+-Ready to plug backend in and link it to the frontend forms.
+    -Going to use a dummy database to test whether it works
+        -Dummy JSON file for user authentication testing
+        -4x dummy user details for login testing.
+    -Got the backend /signup route to work
+        -Debugging & fixing minor issues such as
+            -Wrong users.json path causing 500 error
+                -Fixed the path in auth.js
+            -Backend server not parsing json
+                -Fixed with app.use(express.json());
+            -Username + email being the same
+                -Adding validation to prevent this.
+                -(formData.username === formData.email || validateEmail(formData.username))
+                    -Tests if username equals the email, or if when you validate username it returns true (valid email)
+    -Got the backend /login route to work 
+        -Added a feature for user to login with either their username or email
+-BACKEND AUTHENTICATION MINIMUM COMPLETE.
+TOMORROW::
+        -Going to add separate authentication logic: user will find out whether its the username/email or the password that is incorrect.
+        -Going to add password hashing/unhashing
+        -Going to add password validation checklist (checks to see if password is valid with 5x rules like online forms)
+        
+                    

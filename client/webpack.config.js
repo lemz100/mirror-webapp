@@ -12,7 +12,7 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.jsx'],
     alias: {
-      '@': path.resolve(__dirname, 'src'), // @ points to src folder
+      '@': path.resolve(__dirname, 'src'),
     },
   },
   module: {
@@ -37,15 +37,21 @@ module.exports = {
         },
       },
       {
-        test: /\.less$/i,
+        test: /\.less$/,
         use: [
-          'style-loader', // injects CSS into the DOM
-          'css-loader', // translates CSS into JS
+          {
+            loader: 'style-loader',
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              sourceMap: true,
+              modules: true,
+              esModule: false,
+            },
+          },
           {
             loader: 'less-loader',
-            options: {
-              additionalData: `@import "${path.resolve(__dirname, 'src/global.less')}";`,
-            },
           },
         ],
       },
@@ -70,6 +76,7 @@ module.exports = {
       directory: path.join(__dirname, 'dist'),
     },
     compress: true,
+    historyApiFallback: true,
     port: 3000,
     open: true,
   },
