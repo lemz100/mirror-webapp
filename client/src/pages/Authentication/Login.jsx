@@ -3,10 +3,12 @@ import { validateLoginForm } from './utils/validation';
 import styles from './Authentication.module.less';
 import axios from 'axios';
 import Input from '@/components/Input/Input';
+import Toaster from '../../components/Toaster/Toaster';
 import Button from '../../components/Button/Button';
 import Password from '../../components/Password/Input';
 
 function Login() {
+  /** State variables */
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -15,7 +17,21 @@ function Login() {
     username: '',
     password: '',
   });
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState({
+    problem: false,
+    message: '',
+  });
+  const [loading, setLoading] = useState(false);
+
+  /** Reset variables - for resetting states */
+  const reset = {
+    username: '',
+    password: '',
+  };
+  const resetMessage = {
+    problem: false,
+    message: '',
+  };
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -24,6 +40,7 @@ function Login() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setLoading(true);
     const errors = validateLoginForm(formData);
     if (Object.keys(errors).length === 0) {
       const { username, password } = formData;
@@ -34,35 +51,34 @@ function Login() {
           password,
         });
 
-        setMessage(`Welcome back ${res.data.user.username}!`);
+        setMessage({ problem: false, message: `Welcome back ${res.data.user.username}!` });
       } catch (err) {
         if (err.response) {
-          setMessage(err.response.data.message || 'Login failed');
+          setMessage({ problem: true, message: err.response.data.message || 'Login failed' });
         } else {
-          setMessage('Something went wrong');
+          setMessage({ problem: true, message: 'Something went wrong' });
         }
+      } finally {
+        setFormData(reset);
+        setFormErrors(reset);
+        setLoading(false);
+        setTimeout(() => {
+          setMessage(resetMessage); // resets after 3 seconds
+        }, 3000); // 3000ms = 3s
       }
-      setFormData({
-        fname: '',
-        lname: '',
-        username: '',
-        email: '',
-        password: '',
-      });
-      setFormErrors({
-        fname: '',
-        lname: '',
-        username: '',
-        email: '',
-        password: '',
-      });
     } else {
       setFormErrors(errors);
+      setLoading(false);
     }
   }
 
   return (
     <section className={styles.login}>
+      <div
+        className={`${styles.toasterCont} ${message.message.length !== 0 ? styles.visible : ''}`}
+      >
+        <Toaster problem={message.problem} message={message.message} />
+      </div>
       <h1>Log in to your account</h1>
       <form action="#" noValidate onSubmit={handleSubmit}>
         <Input
@@ -80,9 +96,8 @@ function Login() {
           placeholder="Enter your password"
           errorText={formErrors.password}
         />
-        <Button text={'Log in'} />
+        <Button text={'Log in'} loading={loading} />
       </form>
-      <p>{message}</p>
     </section>
   );
 }

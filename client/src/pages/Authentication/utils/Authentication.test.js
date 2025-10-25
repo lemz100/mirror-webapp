@@ -1,9 +1,10 @@
-import { validateSignupForm } from './validation';
+import { validateSignupForm, validatePword } from './validation';
 
 /**
  * Test scripts for validating signup inputs.
  */
-describe('validateForm() tests', () => {
+
+describe('validateSignupForm() tests', () => {
   test('1️ - Missing required fields returns errors for all', () => {
     const data = { fname: '', lname: '', username: '', email: '', password: '' };
     const result = validateSignupForm(data);
@@ -43,11 +44,11 @@ describe('validateForm() tests', () => {
     const result = validateSignupForm(data);
 
     expect(result).toEqual({
-      password: 'Password needs at least 8 characters.',
+      password: 'Please choose a stronger password',
     });
   });
 
-  test('4️ - Password missing uppercase returns specific error', () => {
+  test('4️ - Password missing uppercase returns error', () => {
     const data = {
       fname: 'John',
       lname: 'Smith',
@@ -58,7 +59,7 @@ describe('validateForm() tests', () => {
     const result = validateSignupForm(data);
 
     expect(result).toEqual({
-      password: 'Password needs an uppercase letter',
+      password: 'Please choose a stronger password',
     });
   });
 
@@ -75,5 +76,59 @@ describe('validateForm() tests', () => {
     expect(result).toEqual({
       username: 'Username needs a minimum of 6 characters',
     });
+  });
+
+  test('6 - Username as email returns error', () => {
+    const data = {
+      fname: 'John',
+      lname: 'Smith',
+      username: 'john@mail.com',
+      email: 'john@mail.com',
+      password: 'ValidPass1',
+    };
+    const result = validateSignupForm(data);
+
+    expect(result).toEqual({
+      username: 'Username cannot be an email',
+    });
+  });
+
+  test('7 - Invalid password case 1 - missing capital letter', () => {
+    const data = {
+      fname: 'John',
+      lname: 'Smith',
+      username: 'john@mail.com',
+      email: 'john@mail.com',
+      password: 'validpa1',
+    };
+    const result = validatePword(data.password);
+
+    expect(result).toEqual(false);
+  });
+
+  test('8 - Invalid password case 2 - missing number', () => {
+    const data = {
+      fname: 'John',
+      lname: 'Smith',
+      username: 'john@mail.com',
+      email: 'john@mail.com',
+      password: 'Validpass',
+    };
+    const result = validatePword(data.password);
+
+    expect(result).toEqual(false);
+  });
+
+  test('9 - Invalid password case 3 - insufficient characters', () => {
+    const data = {
+      fname: 'John',
+      lname: 'Smith',
+      username: 'john@mail.com',
+      email: 'john@mail.com',
+      password: 'Validp1',
+    };
+    const result = validatePword(data.password);
+
+    expect(result).toEqual(false);
   });
 });

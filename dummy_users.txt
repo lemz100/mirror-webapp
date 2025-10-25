@@ -1,0 +1,5 @@
+dummy users:
+
+username: jsmith14
+password: Johnnyboy100
+email: johnsmith14@gmail.com

@@ -1,5 +1,5 @@
 import styles from './Input.module.less';
-import ErrorMsg from '../Input/ErrorMsg/ErrorMsg';
+import ErrorMsg from './ErrorMsg/ErrorMsg';
 
 function Password({ errorText, onChange, value, placeholder }) {
   /**
