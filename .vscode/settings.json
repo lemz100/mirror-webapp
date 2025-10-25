@@ -1,0 +1,13 @@
+{
+  "git.ignoreLimitWarning": true,
+  "eslint.validate": ["javascript", "javascriptreact"],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "editor.formatOnSave": true,
+  "eslint.alwaysShowStatus": true,
+  "eslint.run": "onType",
+  "prettier.singleQuote": true,
+  "prettier.semi": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
+}

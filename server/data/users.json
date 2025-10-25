@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "name": "Sarah Johnson",
+    "username": "sarahj22",
+    "email": "sarah.j@example.com",
+    "password": "87654321"
+  },
+  {
+    "id": 2,
+    "name": "David Lee",
+    "username": "dlee_07",
+    "email": "dlee@example.com",
+    "password": "11112222"
+  },
+  {
+    "id": 3,
+    "name": "Maya Patel",
+    "username": "maya.patel",
+    "email": "maya.patel@example.com",
+    "password": "99998888"
+  },
+  {
+    "id": 4,
+    "name": "John Smith",
+    "username": "jsmith14",
+    "email": "johnsmith14@gmail.com",
+    "password": "$2b$10$B0aW31jJN1ECfKFyf5BvAO006PtzT8/Ts4pmneEIHhq7YKLENooSS"
+  }
+]
