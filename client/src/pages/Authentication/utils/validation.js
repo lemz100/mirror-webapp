@@ -103,8 +103,6 @@ export function validateSignupForm(formData) {
 // Returns true if password adheres to checks in the object.
 export function validatePword(password) {
   // Performs relative functions for each check in the object. Returns true if all functions return true.
-  console.log(password);
-  console.log(checks);
   const checks = {
     minLength: isMinimum(password, 8),
     hasUppercase: hasUppercase(password),
