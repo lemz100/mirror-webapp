@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useLoginFormReducer } from './utils/loginReducer';
 import { validateLoginForm } from './utils/validation';
 import styles from './Authentication.module.less';
 import axios from 'axios';
@@ -8,39 +8,26 @@ import Button from '../../components/Button/Button';
 import Password from '../../components/Password/Input';
 
 function Login() {
-  /** State variables */
-  const [formData, setFormData] = useState({
-    username: '',
-    password: '',
-  });
-  const [formErrors, setFormErrors] = useState({
-    username: '',
-    password: '',
-  });
-  const [message, setMessage] = useState({
-    problem: false,
-    message: '',
-  });
-  const [loading, setLoading] = useState(false);
-
-  /** Reset variables - for resetting states */
-  const reset = {
-    username: '',
-    password: '',
-  };
-  const resetMessage = {
-    problem: false,
-    message: '',
-  };
+  const { state, dispatch } = useLoginFormReducer(); // Custom form reducer with initial state for form and dispatch function for changing state.
+  let { formData, formErrors, message, loading } = state;
 
   function handleChange(e) {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    dispatch({
+      type: 'UPDATE_FIELD',
+      payload: {
+        name: name,
+        value: value,
+      },
+    });
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setLoading(true);
+    dispatch({
+      type: 'SET_LOADING',
+      payload: true,
+    });
     const errors = validateLoginForm(formData);
     if (Object.keys(errors).length === 0) {
       const { username, password } = formData;
@@ -51,24 +38,52 @@ function Login() {
           password,
         });
 
-        setMessage({ problem: false, message: `Welcome back ${res.data.user.username}!` });
+        dispatch({
+          type: 'SET_MESSAGE',
+          payload: {
+            problem: false,
+            message: `Welcome back ${res.data.user.username}!`,
+          },
+        });
       } catch (err) {
         if (err.response) {
-          setMessage({ problem: true, message: err.response.data.message || 'Login failed' });
+          dispatch({
+            type: 'SET_MESSAGE',
+            payload: {
+              problem: true,
+              message: err.response.data.message || 'Login failed',
+            },
+          });
         } else {
-          setMessage({ problem: true, message: 'Something went wrong' });
+          dispatch({
+            type: 'SET_MESSAGE',
+            payload: {
+              problem: true,
+              message: 'Something went wrong',
+            },
+          });
         }
       } finally {
-        setFormData(reset);
-        setFormErrors(reset);
-        setLoading(false);
+        dispatch({
+          type: 'RESET_AFTER_LOGIN',
+          payload: false,
+        });
         setTimeout(() => {
-          setMessage(resetMessage); // resets after 3 seconds
+          dispatch({ type: 'SET_MESSAGE', payload: { problem: false, message: '' } });
         }, 3000); // 3000ms = 3s
       }
     } else {
-      setFormErrors(errors);
-      setLoading(false);
+      // Turn this into reducer
+      dispatch({
+        type: 'SET_ERRORS',
+        payload: {
+          value: errors,
+        },
+      });
+      dispatch({
+        type: 'SET_LOADING',
+        payload: false,
+      });
     }
   }
 

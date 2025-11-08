@@ -1,5 +1,5 @@
-import { useState } from 'react';
 import { validateSignupForm, isMinimum, hasNumbers, hasUppercase } from './utils/validation';
+import { useSignupFormReducer } from './utils/signupReducer';
 import Input from '@/components/Input/Input';
 import styles from './Authentication.module.less';
 import Button from '../../components/Button/Button';
@@ -9,82 +9,49 @@ import Toaster from '../../components/Toaster/Toaster';
 
 function Signup() {
   /** State variables */
-  const [formData, setFormData] = useState({
-    fname: '',
-    lname: '',
-    username: '',
-    email: '',
-    password: '',
-  });
-  const [formErrors, setFormErrors] = useState({
-    fname: '',
-    lname: '',
-    username: '',
-    email: '',
-    password: '',
-  });
-  const [message, setMessage] = useState({
-    problem: false,
-    message: '',
-  });
-  const [validations, setValidations] = useState({
-    minLength: {
-      label: 'Minimum 8 Characters',
-      isValid: false,
-    },
-    hasUppercase: {
-      label: 'Has an uppercase letter',
-      isValid: false,
-    },
-    hasNumber: {
-      label: 'Has a number',
-      isValid: false,
-    },
-  });
-  const [loading, setLoading] = useState(false);
-
-  /** Reset variables for resetting states */
-  const resetValidations = {
-    minLength: { label: 'Minimum 8 Characters', isValid: false },
-    hasUppercase: { label: 'Has an uppercase letter', isValid: false },
-    hasNumber: { label: 'Has a number', isValid: false },
-  };
-  const reset = {
-    fname: '',
-    lname: '',
-    username: '',
-    email: '',
-    password: '',
-  };
-  const resetMessage = {
-    problem: false,
-    message: '',
-  };
-
+  const { state, dispatch } = useSignupFormReducer(); // Custom form reducer with initial state for form and dispatch function for changing state.
+  let { formData, formErrors, message, validations, loading } = state;
   function handleChange(e) {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    dispatch({
+      type: 'UPDATE_FIELD',
+      payload: {
+        name: name,
+        value: value,
+      },
+    });
 
     if (name === 'password') {
-      const checks = {
-        minLength: isMinimum(value, 8),
-        hasUppercase: hasUppercase(value),
-        hasNumber: hasNumbers(value),
-      };
-
-      setValidations((prev) => {
-        const updated = { ...prev };
-        for (const key in checks) {
-          updated[key] = { ...updated[key], isValid: checks[key] };
-        }
-        return updated;
+      dispatch({
+        type: 'SET_VALIDATION',
+        payload: {
+          name: 'minLength',
+          isValid: isMinimum(value, 8),
+        },
+      });
+      dispatch({
+        type: 'SET_VALIDATION',
+        payload: {
+          name: 'hasUppercase',
+          isValid: hasUppercase(value),
+        },
+      });
+      dispatch({
+        type: 'SET_VALIDATION',
+        payload: {
+          name: 'hasNumber',
+          isValid: hasNumbers(value),
+        },
       });
     }
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setLoading(true);
+    dispatch({
+      type: 'SET_LOADING',
+      payload: true,
+    });
     const errors = validateSignupForm(formData); /** Checks if form is validated */
     if (Object.keys(errors).length === 0) {
       const { fname, lname, username, email, password } = formData;
@@ -98,47 +65,88 @@ function Signup() {
           password,
         });
 
-        setMessage({ problem: false, message: res.data.message });
+        dispatch({
+          type: 'SET_MESSAGE',
+          payload: {
+            problem: false,
+            message: res.data.message,
+          },
+        });
         // Resets form when submission is correct
         if (res.status === 201) {
-          setFormData(reset);
-          setFormErrors(reset);
-          setValidations(resetValidations);
+          dispatch({ type: 'RESET_FORM' });
         }
       } catch (err) {
         if (err.response) {
           const taken = err.response?.data?.taken; // Gets the object from backend
 
-          const newFormData = { ...formData };
-          const newFormErrors = { ...formErrors };
           // If a field is taken, it will clear it and apply the error message.
           if (taken?.email) {
-            newFormData.email = '';
-            newFormErrors.email = 'Email is taken. Please enter a different one';
+            dispatch({
+              type: 'UPDATE_FIELD',
+              payload: {
+                name: 'email',
+                value: '',
+              },
+            });
+            dispatch({
+              type: 'SET_ERROR',
+              payload: {
+                name: 'email',
+                value: 'Email is taken. Please enter a different one',
+              },
+            });
           }
           if (taken?.username) {
-            newFormData.username = '';
-            newFormErrors.username = 'Username is taken. Please enter a different one';
+            dispatch({
+              type: 'UPDATE_FIELD',
+              payload: {
+                name: 'username',
+                value: '',
+              },
+            });
+            dispatch({
+              type: 'SET_ERROR',
+              payload: {
+                name: 'username',
+                value: 'Username is taken. Please enter a different one',
+              },
+            });
           }
-
-          setFormData(newFormData);
-          setFormErrors(newFormErrors);
-
-          setMessage({
-            problem: true,
-            message: 'You have some invalid fields - please review your entries',
+          dispatch({
+            type: 'SET_MESSAGE',
+            payload: {
+              problem: true,
+              message: 'You have some invalid fields - please review your entries',
+            },
           });
         } else {
-          setMessage({ problem: true, message: 'Something went wrong' });
+          dispatch({
+            type: 'SET_MESSAGE',
+            payload: {
+              problem: true,
+              message: 'Something went wrong',
+            },
+          });
         }
       } finally {
-        setLoading(false);
+        dispatch({ type: 'SET_LOADING', payload: false });
         setTimeout(() => {
-          setMessage(resetMessage); // resets after 3 seconds
+          dispatch({ type: 'SET_MESSAGE', payload: { problem: false, message: '' } });
         }, 3000); // 3000ms = 3s
       }
     } else {
-      setFormErrors(errors);
+      // Turn this into reducer
+      dispatch({
+        type: 'SET_ERROR',
+        payload: {
+          value: errors,
+        },
+      });
+      dispatch({
+        type: 'SET_LOADING',
+        payload: false,
+      });
     }
   }
 
